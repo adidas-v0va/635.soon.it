@@ -1,0 +1,188 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Neon 635</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one full-bleed black canvas; a small two-tone neon sign (drawn tubes, no font) drifts across it like a DVD logo. */
+:root {
+  --bg: #020204;
+  color-scheme: dark;
+}
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  overflow: hidden;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+#room {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: var(--bg);
+}
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+
+<h1 class="sr">635</h1>
+<canvas id="room" aria-hidden="true"></canvas>
+
+<script>
+(function () {
+  var cv = document.getElementById('room');
+  var ctx = cv.getContext('2d');
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var TAU = Math.PI * 2;
+
+  var W = 0, H = 0, dpr = 1;
+  var dh = 40, dw = 22, dgap = 10, pad = 14, margin = 24, tw = 0, th = 0;
+  var sprite = null, spriteHue = -1;
+  var hue = 190, hueTarget = 190;
+  var x = 0, y = 0, vx = 0, vy = 0;
+  var pulse = 0, time = 0, last = 0;
+
+  function measure() {
+    dh = Math.max(18, Math.round(Math.min(W * 0.055, H * 0.075) * 0.667));
+    dw = dh * 0.56;
+    dgap = dw * 0.5;
+    pad = dh * 0.12;
+    margin = dh * 0.7;
+    tw = dw * 3 + dgap * 2 + pad * 2;
+    th = dh + pad * 2;
+  }
+
+  // digit outlines in a dw x dh box, one continuous tube each
+  function digit6(c) {
+    var r = dw / 2;
+    c.moveTo(dw * 0.94, dh * 0.02);
+    c.bezierCurveTo(dw * 0.5, -dh * 0.02, 0, dh * 0.2, 0, dh - r);
+    c.moveTo(dw, dh - r);
+    c.arc(r, dh - r, r, 0, TAU);
+  }
+  function digit3(c) {
+    c.ellipse(dw / 2, dh / 4, dw / 2, dh / 4, 0, -Math.PI * 0.86, Math.PI / 2);
+    c.ellipse(dw / 2, dh * 0.75, dw / 2, dh / 4, 0, -Math.PI / 2, Math.PI * 0.86);
+  }
+  function digit5(c) {
+    c.moveTo(dw * 0.94, 0);
+    c.lineTo(dw * 0.12, 0);
+    c.lineTo(dw * 0.05, dh * 0.46);
+    c.ellipse(dw / 2, dh * 0.72, dw / 2, dh * 0.28, 0, -Math.PI * 0.78, Math.PI * 0.8);
+  }
+  function tube(c, h, lw, pathFn) {
+    var passes = [[0.5, 0.35], [0.22, 0.55], [0.08, 0.9]];
+    c.lineCap = 'round';
+    c.lineJoin = 'round';
+    for (var i = 0; i < passes.length; i++) {
+      c.beginPath();
+      pathFn(c);
+      c.shadowColor = 'hsla(' + h + ',100%,55%,' + passes[i][1] + ')';
+      c.shadowBlur = dh * passes[i][0] * dpr;
+      c.strokeStyle = 'hsl(' + h + ',100%,56%)';
+      c.lineWidth = lw;
+      c.stroke();
+    }
+    c.shadowBlur = 0;
+    c.shadowColor = 'transparent';
+    c.beginPath();
+    pathFn(c);
+    c.strokeStyle = 'hsl(' + h + ',100%,92%)';
+    c.lineWidth = lw * 0.38;
+    c.stroke();
+  }
+
+  function makeSprite(h) {
+    spriteHue = h;
+    var sw = Math.ceil((tw + margin * 2) * dpr);
+    var sh = Math.ceil((th + margin * 2) * dpr);
+    sprite = document.createElement('canvas');
+    sprite.width = sw;
+    sprite.height = sh;
+    var c = sprite.getContext('2d');
+
+    var fns = [digit6, digit3, digit5];
+    for (var i = 0; i < 3; i++) {
+      c.setTransform(dpr, 0, 0, dpr, (margin + pad + i * (dw + dgap)) * dpr, (margin + pad) * dpr);
+      tube(c, h, dh * 0.085, fns[i]);
+    }
+    c.setTransform(1, 0, 0, 1, 0, 0);
+  }
+
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth;
+    H = window.innerHeight;
+    cv.width = Math.round(W * dpr);
+    cv.height = Math.round(H * dpr);
+    measure();
+    makeSprite(Math.round(((hue % 360) + 360) % 360));
+    x = Math.min(Math.max(x, tw / 2), Math.max(tw / 2, W - tw / 2));
+    y = Math.min(Math.max(y, th / 2), Math.max(th / 2, H - th / 2));
+  }
+
+  function update(dt) {
+    time += dt;
+    x += vx * dt;
+    y += vy * dt;
+    var hw = tw / 2, hh = th / 2, bounced = false;
+    if (x - hw < 0) { x = hw; vx = Math.abs(vx); bounced = true; }
+    else if (x + hw > W) { x = W - hw; vx = -Math.abs(vx); bounced = true; }
+    if (y - hh < 0) { y = hh; vy = Math.abs(vy); bounced = true; }
+    else if (y + hh > H) { y = H - hh; vy = -Math.abs(vy); bounced = true; }
+
+    if (bounced) { hueTarget += 50; pulse = 1; }
+    pulse = Math.max(0, pulse - dt * 1.1);
+    hueTarget += dt * 3;
+    hue += (hueTarget - hue) * (1 - Math.exp(-dt * 0.7));
+
+    var hi = Math.round(((hue % 360) + 360) % 360);
+    if (hi !== spriteHue) makeSprite(hi);
+  }
+
+  function render() {
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = '#020204';
+    ctx.fillRect(0, 0, W, H);
+
+    // faint halo, local to the sign
+    var R = tw * 1.0;
+    var hg = ctx.createRadialGradient(x, y, 0, x, y, R);
+    hg.addColorStop(0, 'hsla(' + hue + ',100%,50%,0.06)');
+    hg.addColorStop(0.5, 'hsla(' + hue + ',100%,45%,0.02)');
+    hg.addColorStop(1, 'hsla(' + hue + ',100%,40%,0)');
+    ctx.fillStyle = hg;
+    ctx.fillRect(x - R, y - R, R * 2, R * 2);
+
+    var breathe = reduce ? 1 : 0.96 + 0.04 * Math.sin(time * 1.3);
+    ctx.globalAlpha = (1 - 0.3 * Math.sin(pulse * Math.PI)) * breathe;
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.drawImage(sprite, x - (tw + margin * 2) / 2, y - (th + margin * 2) / 2,
+      sprite.width / dpr, sprite.height / dpr);
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  function frame(now) {
+    var dt = Math.min(0.05, (now - last) / 1000 || 0);
+    last = now;
+    update(dt);
+    render();
+    requestAnimationFrame(frame);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  var speed = Math.max(W, H) * 0.034 * (reduce ? 0.6 : 1);
+  x = W * (0.3 + Math.random() * 0.4);
+  y = H * (0.3 + Math.random() * 0.4);
+  vx = speed * (Math.random() < 0.5 ? -1 : 1);
+  vy = speed * 0.72 * (Math.random() < 0.5 ? -1 : 1);
+  requestAnimationFrame(function (t) { last = t; frame(t); });
+})();
+</script>
+
+</body></html>
