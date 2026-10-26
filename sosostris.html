@@ -404,9 +404,771 @@ function comboLines(cards){
   return out.slice(0,3);
 }
 
+/* ---- more per-card remarks: majors (index 0-21), then minors (Wands, Cups, Swords, Pentacles; Ace..King) ---- */
+const MNOTE3=[
+"The little dog barks at the drop. It is the only sensible one present.",
+"Four tools on the table. She counts them twice; one is generally missing.",
+"She holds the scroll half-hidden. Madame respects a woman who keeps her own counsel.",
+"Madame was a gardener once. The plants were never so cooperative.",
+"All that red, and not a single window open.",
+"Two keys, two acolytes, and not a thing to say to either.",
+"The tree behind her bears a serpent; behind him, flames. Madame draws no conclusion.",
+"The sphinxes pull in opposite ways, and he calls it steering.",
+"She closes the lion's mouth with two fingers. I have a landlord like that.",
+"He lights thy way and not his own. A bad bargain, but a beautiful one.",
+"Letters on the wheel, and none of them spell thy name. It goes on regardless.",
+"Her sword is raised, her scales are level, her eyes are quite open. Alas.",
+"Observe the halo. Whatever he suffered, he got something for it.",
+"He carries a flag, not a scythe. He is a very modern sort of end.",
+"One foot in the water, one on land; the irises do not mind.",
+"The chains are loose enough to lift over the head. Try it, dear, some Tuesday.",
+"The crown is struck off first. They always forget that part.",
+"Eight stars, and one bigger than the rest. Madame hath a favourite among her debts.",
+"Dog and wolf bay at the same disc, and neither is sure which he is.",
+"Sunflowers, a child, a red banner. Madame suspects the horse is the wisest.",
+"They rise out of coffins with their arms wide. It is a good morning, for them.",
+"She dances in the wreath, and the four creatures watch the corners."];
+const MNOTE4=[
+"Madame once read for a man who stepped off, and landed in a bed of tulips. It happens.",
+"He points to heaven and earth together. It is, strictly speaking, a trick of the elbow.",
+"Pomegranates behind the veil: seeds, and what seeds cost.",
+"Doves on the shield, wheat at her feet. A good house, if one is let in.",
+"The ram's heads watch from the throne. Do not sit beneath them.",
+"Three crosses on the vestment, and the tonsure of the pupils. Ritual, dear; it keeps the roof on.",
+"An angel above, blessing them both, and neither looking up.",
+"A city behind him, and he rides away from it. I know the feeling.",
+"The infinity sign again, over her head. It is the only thing in the card that is not tired.",
+"A star in his lantern, snow at his feet. He has walked longer than thou hast been asking.",
+"A sphinx above, a serpent below, a jackal rising. The wheel is not for thee or against thee, dear; it turns.",
+"Between two pillars, a purple curtain. She hath heard everything said in this room.",
+"Hands behind his back, one knee bent, and a face of perfect calm. I hate him a little.",
+"A bishop pleads, a child offers flowers, a king lies down. She takes all three alike.",
+"The path to the mountains starts beside her. Do not ask where the crown on the peak is.",
+"A torch in his hand, and the woman's tail catches the fire. Housekeeping, dear.",
+"Two figures leap, and one has a crown. The other, alas, had only a coat.",
+"She pours on the land and on the water both. Fairness, of a sort.",
+"A crayfish climbs from the pool, and no one hath asked it to.",
+"A child with no saddle. Madame calls that faith, or fecklessness; she cannot tell them apart.",
+"The mountains in the distance, the sea at the foot; the trumpet carries over both.",
+"Four faces in the corners: a man, an eagle, a lion, a bull. The compass of the whole affair."];
+const MINOR1=[
+/* wands */
+"The hand comes out of a cloud and offers a branch in leaf. She never says who owns it.",
+"He holds the globe and a staff, and the sea is wide. The man looks as though he hath already left.",
+"He looks to the ships from the headland. Madame hath seen him before, at several windows.",
+"A garland swung between four poles, and a castle at the back. A holiday, dear, for those it was made for.",
+"Five boys, five staves, and no one hurt. It is not a war; it is a Tuesday.",
+"He rides in with a wreath on the spear. They cheer; they always cheer, the first day.",
+"He stands above them, one shoe odd. He holds the hill alone.",
+"Eight staves in the sky, and no one beneath them. They are not for thee; thou art merely in the way.",
+"A bandage on the brow, and a fence of staves. The eyes are open, which is something.",
+"He carries ten and cannot see the road. The village is near, dear. Set one down.",
+"A boy in a desert, looking at a leaf on his staff. It is the greenest thing for miles.",
+"He rides through the desert at a gallop, and the horse is rearing. Between them there is no plan.",
+"Sunflower, black cat, and a look that goes through the wall. Madame curtseys.",
+"The salamander on the cloak, the throne on lions. He holds the wand as though it were a candle.",
+/* cups */
+"The cup is full and the dove brings the host. The water falls in five streams, and not one is wasted.",
+"The caduceus and the lion's head above. They exchange cups; the contract is the winged thing.",
+"Three women with raised cups, a garland, and the harvest at their feet. Madame is not invited.",
+"He sits under the tree and a hand offers a fourth cup from a cloud. He looks elsewhere, and does it well.",
+"A figure in black weeps over three spilt cups, and the two upright ones stand unnoticed behind. The river runs by.",
+"Two children in a courtyard, and flowers in the cups. A snow-white nostalgia.",
+"Seven cups on clouds, each with a thing in it: a castle, a snake, a veil. Thou mayst choose one and regret six.",
+"He walks away by moonlight with his staff, and eight cups sit stacked behind. The moon hath a face; it watches him go.",
+"A rich man on a bench, arms crossed, nine cups on a shelf. He is full, which is not the same as happy.",
+"A rainbow of cups above the cottage, and the children dancing. Madame looks away, from pure envy.",
+"A fish looks out from the cup, and he is the only one in the card who is surprised.",
+"He carries the cup like a letter, and the horse walks, not gallops. A courteous man; beware.",
+"The cup is closed, and she looks at it. The sea washes her chair.",
+"The throne floats on the water, and a fish leaps beside him. He is calm in a sea that wishes he were not.",
+/* swords */
+"A sword up through a crown with palm and olive. It is raised for justice, or for a coronation; both are loud.",
+"A blindfolded woman on a bench, two swords crossed on her chest, and the sea behind. She cannot see, and does not wish to.",
+"A heart, three blades, rain. There is no subtlety to it, and Madame is grateful.",
+"A knight in stone, hands folded, swords on the wall and one beneath. He sleeps, and that is a sort of mercy.",
+"Someone hath picked up three swords, and two walk off defeated. He grins, and the grin is the worst of it.",
+"A ferryman poles a boat of sorrows over grey water. The far shore is bright; it always is.",
+"He tiptoes from the tents with five swords, glancing back. Madame hath a great respect for the cleverly guilty.",
+"She stands bound and blinded among eight swords, with water at her feet. The way out is open at the back. It always is.",
+"She sits up in bed, face in her hands, and the swords hang on the dark. Madame knows this hour. It belongs to everyone.",
+"A man face down, ten swords in the back, and a dawn behind. It cannot get worse, which is a mercy of a kind.",
+"A boy on a windy hill with a sword that is too bright. The clouds scud, and he looks at them.",
+"He charges into the wind, hair and trees flying. He hath no map, and a great deal of horse.",
+"She lifts her hand, and her sword upright. The cherubs on her throne do not flinch. Madame does.",
+"He sits straight with his blade in his right hand. He is judging thee, politely.",
+/* pentacles */
+"A hand offers a coin above a garden, and the lilies are in flower. Take it, dear. It is not a trick.",
+"A man dances while he juggles two coins in an infinity-loop, and the ships ride the waves behind. Do not look down.",
+"A craftsman on a bench, two clerks with a plan, and a cathedral half-made. The roof is a thing of faith.",
+"A man sits with a coin on his head, one under each foot, one in his arms. He is quite safe; nothing is quite his.",
+"Two beggars in the snow, and a lit window of stained glass above. It is the one place they do not look.",
+"A merchant gives coins with one hand and holds the scales with the other. Madame hath met him; he counts the givings.",
+"He leans on his hoe and looks at the coins on the bush. Everything is ready, and he is not.",
+"An apprentice at his bench, stamping coins; the finished ones lie in a row. He doth not look up. That is the whole of the card.",
+"A woman in a garden of grapes, a falcon on her glove, a snail at her feet. She is alone, and is not unhappy.",
+"An old man, a couple, a child, two dogs, and the arch. It is a family. Madame hath never trusted them.",
+"He holds up the coin as if it were a new star. It is a very green field.",
+"The horse does not move, and the knight does not either. They are thorough, if nothing else.",
+"A rabbit at her feet, flowers on the arch. She knows the price of everything, and is kind about it.",
+"Vines, bulls on the chair, a castle in the background. He sits among his goods and does not look pleased."];
+
+/* ---- suit, rank, reversal, aside and position pools ---- */
+const SUITN=[[
+"Wands, dear: every one is a small decision with its leaves still on.",
+"The stave never stands in the same place twice. That is the point of it.",
+"A wand is a promise that hath not yet been kept.",
+"They bloom in the cards; they never do in the hand.",
+"Fire suits are quick. Madame prefers a slower flame, and a longer kettle.",
+"A staff is a thing to lean upon, or to strike with. The card does not say which.",
+"Madame is wary of the suit that is always hurrying somewhere.",
+"Where there are wands there are journeys, and there is always a draught on the road.",
+"Ambition, dear. It grows in the pot until it cracks it.",
+"The desert behind the wands is not empty. It is merely waiting.",
+"A burning thing, in a dry country. Mind the thatch.",
+"Wands: the suit of the one who says, 'I shall go on.' It is not a promise.",
+"They flower from dead wood. Madame hath seen it, and still does not trust it.",
+"Staves, dear: the posts that hold up a fence, or a pyre."],[
+"The water suit. It remembers more than thou dost.",
+"Cups are never full for long. Look to the level.",
+"Madame hath a cup, chipped, which she will not give up.",
+"A cup is a question, and what it holds is the reply.",
+"The heart-suit, they say. It is a clumsy organ; the cups agree.",
+"The river runs behind every cup. Do not mistake it for the cup.",
+"Feeling, dear, is a damp thing. It gets into the bindings.",
+"Some cups are offered. Some are only shown. Learn the difference.",
+"A glass on the sill, a face in the glass. Madame hath had enough of both.",
+"They float above the water in the cards, which is not where cups belong.",
+"To drink is to agree. Look at what thou art agreeing to.",
+"Water finds its level. So do wishes, alas, and not the same one.",
+"Cups are kind to the kind, and merciless to the merely polite.",
+"The wine in the cups is the colour of the dusk. Do not look into it long."],[
+"Swords: the air-suit. Thought, dear, which is a cold weather.",
+"Every sword in the deck points at someone. This one points at thee, or near thee.",
+"A blade of the mind is the sharpest, and the least visible.",
+"The clouds in the sword-cards are always about to break.",
+"What is said cannot be put back into the sheath.",
+"Madame keeps her swords face-down at night. Out of respect, and prudence.",
+"A word and a blade differ only in the wound.",
+"They are a suit of the afternoon: late, bright, over before thou hast chosen.",
+"Troubles of the head, mostly. The cure is tea, and a window.",
+"Swords come in pairs, in threes, in tens; they never come in ones for long.",
+"There is no wind in the sword-cards, only the sound of it.",
+"Wherever the swords are, someone hath said something.",
+"They glitter, which is the least of what they do.",
+"Swords: the suit that wins the argument and loses the afternoon."],[
+"Pentacles: the earth-suit. Coin, field, bread, and the door they open.",
+"Money, dear, is merely a way of being tired in public.",
+"The coin hath a star on it, and the star is a promise made to a landlord.",
+"Stone and soil; they take thy weight, and ask for nothing but to be kept.",
+"A suit for the patient, and the grasping; the card does not say which thou art.",
+"Pentacles never hurry. They arrive at the end of the month.",
+"Madame hath a drawer of these. Most are not real.",
+"What thou holdest here is held for someone else, eventually.",
+"The garden wall, the gate, the key; all of them coin, in their way.",
+"Harvest and rent. The earth keeps both accounts.",
+"A suit of hands, mostly, and what they have made.",
+"Whatever is solid in the deck is in this suit. It will outlast thy opinion of it.",
+"Gold in the card; copper, alas, in the pocket.",
+"Things grow slowly in this suit. So do the debts."]];
+const RANKN=[[
+"An ace is the seed. Do not ask for the tree yet.",
+"Aces, dear: a gift, and a small print.",
+"A beginning with its hand out of a cloud. Somebody always wants to know whose.",
+"The first of anything is the loudest."],[
+"Two: a balance, a pairing, a hesitation. It is always one of the three.",
+"A twosome in the cards is never entirely cosy.",
+"Two things held in the air at once. Madame admires the nerve.",
+"Duality, dear. The deck hath a taste for it."],[
+"Three: something made, and now looked at.",
+"A third arrives, and the arithmetic changes.",
+"The number of consequence. Madame is always a little nervous around it.",
+"Three, and the thing is no longer a secret."],[
+"Four: the square. A house, a halt, a stalemate.",
+"Four walls, four legs, four feet of ground. Thou art settled, or stuck.",
+"Stability, dear; or the thing that looks like it.",
+"The fourth card is always a pause. Sit in it a moment."],[
+"Five: a quarrel, a loss, a turning. It is never comfortable.",
+"The five is the card of the thing going wrong, and then being known.",
+"Five, and there is damage. Count it carefully.",
+"The number of friction. Madame keeps her good china elsewhere."],[
+"Six: a mending, or the beginning of one.",
+"A kindness, a journey, a debt repaid. Not necessarily in that order.",
+"The six is the card after the storm, when the neighbours bring soup.",
+"Something eases. Do not trust it too quickly, and do not refuse it either."],[
+"Seven: a choice, a test, a thing not quite what it seemed.",
+"A seventh card is a question that wears the face of a sum.",
+"Seven is the hour of doubt. Pour a drink; do not drink it yet.",
+"Under seven, someone is bluffing. It might be thee."],[
+"Eight: work, motion, a slow gathering of the thing.",
+"Eights are the cards of effort. Madame sighs, in sympathy.",
+"The long middle of a long business.",
+"Eight, and it is not nearly done."],[
+"Nine: almost. The last room before the street.",
+"The nine is the vigil, or the reward; the card keeps it a secret which.",
+"One short of the whole, and the heart goes quick.",
+"A nine hath nothing left to prove, and does not know it."],[
+"Ten: an end, a fullness, a weight. The coin has been spent.",
+"The tenth of anything is a threshold. It will turn into a different card.",
+"Ten, and the suit is done. What it asked for, it hath received.",
+"A ten is a house with every window lit. Thou mayst go in, or stay out."],[
+"The page is a messenger. Mind the message, not the boy.",
+"A young face in the court; he is learning, and he is learning from thee.",
+"Pages: the news arrives, and it is a child's news. Do not scold it.",
+"A page is a promise that hath not yet found its horse."],[
+"A knight is a thing in motion, with the wrong sort of plan.",
+"The knight rides in, and what he brings is the whole weather of his mind.",
+"Knights, dear, are all intention and no stairs.",
+"A knight is somebody in a hurry to be right."],[
+"The queen sees all, and sits, and does not say.",
+"A queen hath a manner. Learn it, or leave it.",
+"The queen of anything is a house, and thou art her guest.",
+"She is kind, if thou art honest. Madame hath had to learn it."],[
+"The king settles the matter, or will. Do not pester him.",
+"A king is a thing that is very much still, and very much there.",
+"Rule, dear; or the habit of it.",
+"The king hath done it all before, and does not say so."]];
+REVNOTE.push(
+"Upside down. The card is not wrong; the room is.",
+"She taps the corner, as one taps a watch. It is quite right; it is only reversed.",
+"A reversal means the thing is turned inward, or turned out. Madame cannot always say which.",
+"The wrong way up, and the meaning with it. She tuts, softly.",
+"Reversed cards, dear, are the ones that have been listening at the door.",
+"Upside down: the hush after the sentence.",
+"The card falls upside down, and a draught moves the lamp.",
+"She says nothing. She turns it a quarter, and thinks better of it.",
+"A reversal: the meaning pulled in like a curtain.",
+"Reversed, it is the same card, only more honest.",
+"It hath come to thee the wrong way up. Madame takes it as a compliment.",
+"When a card falls reversed, it is generally shy.",
+"Upside down, and rather pleased with itself.",
+"She does not turn it round. The cards have their reasons.",
+"The shuffle hath done this. The shuffle is on no one's side.",
+"Reversals are the cards' way of lowering their voices.");
+const ASIDE=[
+"The lamp flickers, and she moves it a little. It has opinions.",
+"She sneezes, and the cards shiver.",
+"A bell somewhere. Not for thee, probably.",
+"The kettle begins, in the next room, to sing. She ignores it.",
+"Madame draws her shawl closer. The draught is of a particular kind.",
+"A clock strikes, and she counts it, and loses count.",
+"Outside, in the fog, the crowd flows. It always flows.",
+"She sips her tea, which is now cold, and grimaces with feeling.",
+"The cat on the sill looks at thee, and then at the cards, and away.",
+"A coin falls somewhere under the table. She does not stoop.",
+"There is a smell of damp wool and bergamot.",
+"The shutter bangs. She says it does this at about this hour.",
+"She turns the card a little to the lamp. It does not improve.",
+"She mutters a name. It is not thine.",
+"The wallpaper breathes. Pay it no mind.",
+"Madame polishes her spectacles on her shawl, and makes them worse.",
+"A train goes by under the floor. It does that.",
+"She hums something from a Sunday long ago.",
+"The fog presses at the window like a face.",
+"A drop falls from the ceiling into a saucer. It has been doing so for years.",
+"She coughs, and apologises to the card.",
+"Somewhere a stair creaks, as if someone were thinking of coming down.",
+"She adjusts a hairpin, and the future shifts a quarter-inch.",
+"The curtain moves, though no window is open.",
+"She reads the card the way one reads a bill.",
+"A moth strikes the lamp and recovers, which is more than most do.",
+"A lorry passes outside. The cards rattle a little in sympathy.",
+"Her bracelets chime. She hath never taken them off.",
+"She looks at the card for a time, and then at thee for rather less.",
+"The room smells of cold ash and oranges.",
+"There is a long pause, which she appears to enjoy.",
+"A street-lamp comes on, and the window goes yellow.",
+"A dog barks, once, far away; she nods as if it had agreed.",
+"She pats the table, as one pats a nervous horse.",
+"The ink on her cuff is the previous client's, she says.",
+"She sucks a lozenge and looks wise, or ill.",
+"The rain starts, and the cards take on a greener light. She will not discuss it.",
+"She counts her rings under the table, as if to be sure.",
+"Somewhere in the walls a pipe knocks, three times, and stops.",
+"She leans closer, and thou canst smell camphor.",
+"The ceiling hath a stain in the shape of a country. She has never named it."];
+const POSN={
+1:[[
+"One card, dear: all of it, or a cough's worth.",
+"A single card. She does not decorate it.",
+"When there is only one, it hath nothing to hide behind.",
+"The whole reading, and it fits in the palm.",
+"One card, one sentence, a great deal of fog.",
+"She sets it down alone, as one sets down a plate of something suspect."]],
+3:[[
+"Beneath thee, then. The thing already under the floorboards.",
+"What thou hast laid down, and thought was gone.",
+"This is the old matter; dust it if thou wilt.",
+"Buried, and the soil is thin. Dear, it is coming up."],[
+"The seed that found a crack. It is not nothing.",
+"Out of the dry, a thing starts. Madame hath seen it, and been astonished.",
+"Growth, dear, even here. Particularly here.",
+"Something is making its slow way through the masonry."],[
+"A companion, or an accident that keeps pace. Count the footsteps.",
+"Whoever it is, they have been there some while.",
+"There is a presence at thy elbow. It does not say its name.",
+"The one beside thee is not always who thou thinkest."]],
+5:[[
+"That is thee, dear: the card is only the coat.",
+"The querent. Madame hath seen thee come in, and the card agrees.",
+"This is the one who asks; and that, alas, is the whole trouble."],[
+"Under the floor, a thing. She pretends not to hear it.",
+"What lies buried, and not so deep as thou wouldst like.",
+"Dig, if thou wilt. Madame would rather not."],[
+"What is spoken, in this room or another. Words are awfully durable.",
+"The thing said aloud, and what it did after.",
+"Something hath been said that cannot be unsaid. This is its card."],[
+"Outside, in the street, a thing waits. It has not knocked.",
+"Whatever is at the door hath been there all evening.",
+"What waits in the street is patient. It hath nothing else to do."],[
+"The river takes it, whatever it is. Madame hath no control over the river.",
+"What the river carries is not always lost. It does drift.",
+"A thing goes by on the water; thou mayst wave, or not."]],
+10:[[
+"This covers thee like a coat: the whole of the present weather.",
+"What lies upon thee, dear; it is not as heavy as it looks.",
+"The thing that sits on thy chest at night. It hath a name; this is it."],[
+"Here is what crosses thee. It is not always an enemy; it is only in the way.",
+"The obstacle, or the teacher dressed as one.",
+"Across the first card lies the second, as in life: a crossing, a hindrance, a bridge."],[
+"The root, beneath it all. Dig, if thou art brave.",
+"What lies below even thy own knowledge. Madame leaves the lamp there.",
+"The foundation, and the foundation is not what thou imaginedst."],[
+"What lies behind, and is mostly gone. Mostly.",
+"The past, fading like a tide. A little salt is left.",
+"Behind thee, a thing is going out. Do not turn; it takes longer if thou watchest."],[
+"The crown above: what thou hopest, or what is hoped of thee.",
+"What presides over the matter, like a weather.",
+"Above, a distant thing; one cannot reach it, but it can be seen."],[
+"What comes next. Madame is terribly sorry for the delay.",
+"The near future, as near as these things ever are.",
+"What is approaching, whether thou art ready or not."],[
+"Thyself, as the cards see thee. A little thinner than in the mirror.",
+"Here thou art: the bare card, without the coat.",
+"This is thy stance in the matter. It is more telling than thou wouldst like."],[
+"The house about thee: the people, the walls, the weather that falls on both.",
+"Thy surroundings. They are not always for thee, and not always against.",
+"What the world is doing, while thou art being asked."],[
+"Hope and dread, which are the same card, face to face with a mirror.",
+"What thou wishest for, and fearest, and sometimes cannot tell apart.",
+"Both the wish and the fear, and they are standing very close."],[
+"The end of it, or its present shape. Endings are only turnings.",
+"Where it all comes out. It is not always the place thou thoughtest.",
+"The last card of the spread. Madame doth not like to look at it long."]]};
+
+/* ---- openings, questions, closings ---- */
+OPEN.push(
+"The street-lamp outside gutters, and the room becomes more itself.",
+"Madame consults a card she hath already turned face down, and nods to it.",
+"She says the cards are in a mood, and so is she.",
+"A candle is lit, and the shadows rearrange themselves like furniture.",
+"The cloth is spread; the cards come out of a biscuit tin, as they have for years.",
+"She cuts the deck with the edge of her hand, as one cuts a loaf.",
+"A clock stops, and then starts, and she pretends not to have noticed.",
+"She sits, and the chair complains for both of you.",
+"The fog is in the room already; she waves it from the cards.",
+"Madame lays a hand on the deck, and the deck, like a dog, settles.",
+"There is a smell of lamp-oil and a sudden quiet.",
+"She turns the first card as one lifts a lid on a pot.",
+"Thou art the third this evening, she says. The others did not stay.",
+"She shuffles the deck once, twice, and then, with a look, a third time.",
+"The room darkens a shade, to be polite.",
+"Her fingers are cold. The cards, to her, are warmer.",
+"A tram bell outside; she waits for it to finish.",
+"She puts her spectacles on the cloth, which is a bad sign or a good one.",
+"Madame sighs. The cards sigh back.",
+"The wick hisses; the room leans in.",
+"The deck, she says, hath been in the family a long time. She does not say which family.",
+"She taps the top card, apologises, and begins.",
+"Madame lowers her voice, though there is nobody in the house.",
+"The cards fan out on the cloth like a wicked pack of something.",
+"She takes thy hand, looks at it, gives it back. Not that kind of reading.",
+"A cough, a creak, a card, and so it starts.",
+"The wind goes round the house twice and settles.",
+"The lamp is turned down. Madame says it makes the cards more honest.",
+"She mutters a rhyme of her own. It does not scan.",
+"Come in, dear, mind the step, and the other step.");
+const OPENR=[
+"Thou again. The cards remember thee, as I do.",
+"Back so soon? The deck hath been talking.",
+"Another visit. She sets out a second cup, and does not fill it.",
+"Madame knows that cough. It is thine, I think.",
+"Thou hast come again. The fog came with thee.",
+"The door was left open for thee, dear. It generally is.",
+"Madame marks the day in her book. It is thy day, again.",
+"Thou wert here before. The chair still holds the shape of thee."];
+const OPENN=[
+"A late hour for fortunes. They are the better for it.",
+"At this time of night, the cards speak plainer. They are also crosser.",
+"Past midnight, and the lamp is the only honest thing in the street.",
+"The small hours, dear: the hour for those who cannot sleep, and for cards.",
+"Few come at this hour. The ones who do want the truth, or company.",
+"Night, and the fog above the roofs. Sit; it is a good hour for it."];
+const OPENM=[
+"Morning, and the milk is not yet on the step. Sit.",
+"An early client. The cards are still half asleep.",
+"Dawn light on the cloth; the cards look paler.",
+"Madame hath not had her tea. The reading will be, therefore, honest.",
+"Early in the day for fortunes. Early in the day for most things."];
+const OPENE=[
+"The lamps are lit, and the hour is good for cards.",
+"Evening: the hour when the street comes home and the deck wakes up.",
+"Dusk, and a chill. Sit nearer the lamp.",
+"The evening trains are in, and she is ready."];
+QREP.push(
+"She writes it on the back of her hand, which is already crowded.",
+"A question like that wants a larger lamp.",
+"She repeats it, softly, as if to the cards themselves.",
+"It is a good question; she hath had it before, from better-dressed people.",
+"She does not answer it directly, which is courtesy.",
+"She holds the question up to the light, and it comes through grey.",
+"Madame hears thee, and so do the walls.",
+"A very ordinary question, dear, and therefore a hard one.",
+"Thou askest as if thou hadst already the answer. Interesting.",
+"She sniffs the question, as one sniffs milk.",
+"The question settles on the cloth like a moth.",
+"She tells the deck, and the deck pretends not to hear.",
+"There is an odd silence after the question; she lets it stand.",
+"Madame wrote it down once. The ink ran.",
+"She says that question hath always had a draught around it.",
+"A good, honest question. It will not like the answer.",
+"The cards lean in, in their fashion.",
+"She nods, which means she hath understood thee, or is about to sneeze.",
+"The question is put to the cards; Madame merely carries the tray.",
+"She tilts her head. 'That one,' she says, 'wants fog.'");
+NOQ.push(
+"Thou hast brought no question. She shall ask one for thee, quietly.",
+"No question: the cards are, then, a kind of weather.",
+"Silence suits thee. Madame will make do.",
+"She shrugs, and the shawl shrugs after her.",
+"No words, then. The cards are rather good at it.",
+"Thou hast asked nothing, and so shall be told everything.",
+"An unasked question is a fine thing; it keeps the longest.",
+"No question, dear? She finds it a restful change.",
+"Thou comest to be told. Well, she is good at telling.",
+"Quite so: some things one does not say aloud.",
+"Madame thanks thee for not asking. She is tired.",
+"The cards will have to guess. They are good at it, and unkind.");
+const KEYQ=[
+[/\b(love|lover|heart|kiss|marry|marriage|romance|crush|date|dating|partner|ex)\b/i,[
+"A question of the heart. Madame puts a cushion beneath the cards.",
+"Love, dear. The cards are rarely kind to it, and often accurate.",
+"She has heard that one a great many times. The answers vary, and none of them are comfortable.",
+"She raises one eyebrow, which is her ceremonial reply to the word 'love'."]],
+[/\b(money|rich|pay|rent|debt|cash|afford|salary|buy|price|invest)\b/i,[
+"Money: the deck is not a banker, but it can count.",
+"A coin question. Madame feels in her pocket, and finds the pocket.",
+"She says the cards rather like money, in the abstract.",
+"Money, dear: the only subject on which everyone tells the truth, and no one the whole of it."]],
+[/\b(job|work|career|boss|office|hire|hired|interview|promotion|quit|business)\b/i,[
+"A question of employment. The cards have no opinion on bosses, only on weather.",
+"Work, then. She sighs, as she does for all labour.",
+"A job. The deck hath held several, and resigned from most.",
+"The office, the desk, the clock: she knows them, dear, from the inside."]],
+[/\b(should|shall|ought|must)\b/i,[
+"Should is a heavy word. She puts it carefully to one side.",
+"Thou askest what thou shouldst do. The cards prefer to describe.",
+"A 'should', dear: someone else's word, usually, in thine own mouth.",
+"The cards do not say 'should'. They only point, politely."]],
+[/\b(when|how long|soon|ever|date)\b/i,[
+"When? She hath a poor sense of time. Ask the clock; it is lying too.",
+"The cards are bad at dates. They are excellent at weather.",
+"Soon is a flexible word in this house.",
+"She consults the cards for the hour, and the cards consult a very old clock."]],
+[/\bwill (it|i|he|she|they|we|there|this|that|you)\b/i,[
+"A 'will'. The cards say what is, and are shy of what will be.",
+"Madame answers 'will' with 'might', and charges the same.",
+"The future is shy, dear; it comes by the back stair.",
+"Will it? She spreads her hands, which is professional."]],
+[/\bwhy\b/i,[
+"Why? The cards rarely say. They arrange the evidence.",
+"A 'why' is the most expensive of questions, and the least often answered.",
+"Madame hath a feeling it is because of the weather, but she does not push it.",
+"Why: the question the cards like least, and answer most."]],
+[/\bwho\b/i,[
+"A 'who'. She looks over thy shoulder before answering.",
+"Whoever it is, they are not far. Madame has known that for some time.",
+"She hath a feeling the 'who' is closer than thou wouldst like.",
+"Names come out strangely in the cards; the faces are clearer."]],
+[/\b(home|house|move|moving|flat|apartment|city|landlord)\b/i,[
+"A question of address. The cards are all, in their way, lodgers.",
+"A house, a street, a door. Madame hath drawn the curtains for thee.",
+"Moving? She says there is always a draught at the new place too.",
+"The cards know the way home, and don't care for it."]],
+[/\b(friend|friends|family|mother|father|mum|mom|dad|brother|sister|child|son|daughter)\b/i,[
+"People, then, the oldest of questions. She puts the kettle on, mentally.",
+"Family: the deck has several, and seldom speaks of them.",
+"Madame hath a family too; they have never agreed on the cards.",
+"Someone close. The cards are discreet, and a little frightened."]],
+[/\b(exam|test|school|study|degree|college|university|class)\b/i,[
+"An examination. The cards take no marks, but they have memories.",
+"School: the cards had their own, and left in good time.",
+"Study, dear, is a form of fog. Thou art in it, and it is thinning.",
+"Tests: the cards fail everyone eventually, and tell no one."]],
+[/\b(trip|travel|journey|abroad|flight|holiday|vacation)\b/i,[
+"A journey. The cards pack nothing, and are never late.",
+"Travel, dear: the same fog, in a different city.",
+"The roads in the cards go both ways, which is rather the trouble.",
+"A trip: Madame hath not left this room since the spring of a certain year."]]];
+const ONEC=[
+"A single card, and a single sentence. She hath no more to give.",
+"Only the one. Madame says the others were shy.",
+"She will not draw a second. The first is enough to be going on with."];
+const CODAHEAD=[
+"Madame Sosostris adds",
+"Madame coughs, then adds",
+"Madame, rising, adds",
+"Madame, to the lamp, adds",
+"She gathers the cards, and adds",
+"Madame, retying her shawl, adds",
+"Madame, not looking up, adds",
+"Madame, in a different voice, adds"];
+C.push(
+"The cards have said their say, dear; the rest is an exercise in listening.",
+"If thou findest the answer in the street, be so kind as to return it.",
+"She gathers the cards slowly, as one gathers the dead.",
+"Mind the fog on the way out; it is thicker than it looks.",
+"The fee, she says, is whatever thou hast not yet lost.",
+"Go in peace, or in whatever is nearest to it.",
+"She stacks the deck, and the deck sighs as it is stacked.",
+"The reading is concluded. The thing it concerns is not.",
+"Madame will remember thee, which is rather a lot for her to do.",
+"Take a scarf; take an umbrella; take, if thou canst, a friend.",
+"The lamp is turned down. This is not a hint.",
+"She closes the tin. The cards are inside, listening.",
+"Leave by the front door; the back one hath been difficult since March.",
+"She does not say goodbye. It is bad luck in this house.",
+"Thou mayest, if thou like, come again. The cards will not be offended.",
+"She blows on the cloth, and the future settles like dust.",
+"The street is waiting, dear. It hath been waiting some time.",
+"Thou hast the look of a person who will not take the advice. Well.",
+"The fog has taken thy footprints already; thou must make new ones.",
+"She wraps the deck in silk. It is the one thing in the house that is clean.",
+"Madame rubs her eyes. The reading is over, and the day follows.",
+"She says thou wilt remember it differently tomorrow. Everyone does.",
+"She puts the kettle on, which is a sign of dismissal, and kindness.",
+"Let the cards rest. They have a long night of being themselves.",
+"All that was said, was said once. It does not bear repeating.",
+"Go carefully; she hath only the one chair.",
+"Whatever thou didst come for, thou didst not leave it here.",
+"She taps the table twice, for luck, and once, for the landlord.",
+"The bell over the door will ring when thou leavest. Pay it no mind.",
+"Everything in the cards is a possibility. Alas, most of them are thy own.",
+"The cloth is folded; the cards are away. She looks tired, and satisfied.",
+"A last cough, and the reading is done.",
+"She says the cards are never wrong, only unkind.",
+"Do not thank her. It makes the cards nervous.",
+"The reading hath no moral, dear, only a mood.",
+"Thou mayest take what thou wilt of it. The rest she will keep.",
+"The pack is closed, the lamp is low, and the evening is the better for thee.",
+"Madame says nothing for a time, which is the final card.",
+"The fortune was given freely. The consequences must be bought.",
+"If the fog parts on thy way home, take it as a sign. If not, take it as a fog.",
+"She says to eat something warm, and not to read the future on an empty stomach.",
+"The reading ends where all of them end: in the street, in the rain.",
+"She looks at thee a little longer than she needs to.",
+"The cards remember thee, dear, whether thou likest it or not.",
+"A stair, a door, a street, a night. She waves from the window.",
+"It is thy life. She merely holds the lamp.",
+"Thou art free to go. In the end, thou wert free to stay away.",
+"The last word is thine, and the cards would like it to be a kind one.",
+"The tea is cold, the cards are warm, and it is time.",
+"She says: hold the thing lightly. It is a very fine thing, and it breaks.",
+"When the bells strike, thou wilt know the matter is closed.",
+"She murmurs something from a poem, and does not finish it.",
+"It is late, and thou hast been brave. She says so, which is rare.",
+"A gust of wind, a rattle, and the cards are quiet.",
+"Walk home the long way. The short way is full of thy own thoughts.",
+"She pins up her hair; the reading is over.",
+"The cards say what they say, dear. The rest is thy interpretation, which is the real fortune.",
+"Nothing more to be said. She says it anyway, briefly.");
+OPENR.push(
+"The chair, she says, was warm before thou satest.",
+"Thou comest back like a refrain. Madame is fond of refrains.",
+"Again, dear? The cards had hoped thou wouldst.",
+"She hath kept thy cup on the shelf. It is not clean.",
+"Another evening of thine, in her book.",
+"The step creaks in the old way, which she takes for thee.");
+OPENN.push(
+"Night, and the clock hath stopped counting out of politeness.",
+"Few lamps are lit tonight; she hath lit hers for thee.",
+"The street is empty. Even the fog has gone to bed.",
+"At this hour the cards are less shy, and so is she.");
+OPENM.push(
+"Grey light, and the first tram. Madame makes it a fortune.",
+"The dawn is thin; she lights the lamp against it.",
+"Morning, and the cards smell of cold tea.",
+"The bakery's open, somewhere; she can smell it. Sit.",
+"Early light on a dusty cloth. Honest, if unflattering.");
+OPENE.push(
+"The shops are shutting, and the cards are getting up.",
+"Lamplight, and a taste of coal-smoke. Madame is in form.",
+"The trams are packed, the street is loud, and here is quiet.",
+"Late afternoon turned to evening. She lays the cloth.",
+"The sky outside is the colour of an old bruise. A good light for it.",
+"The clerks are going home. She sits, and thou with her.");
+
+/* ---- combinations: specific pairs and general patterns, each with variants and a chance of firing ---- */
+const COMBOS={
+"0,13":["A fool and a skeleton on one bench, matched in cheerfulness.","The Fool and Death in one spread. Madame suspects they know each other.","Both of them walk on, regardless. She admires the manners."],
+"13,16":["The Tower and Death, together. Madame closes the shutters, politely.","Ruin, and then the broom. A thorough sort of reading.","Both of them arrive without knocking."],
+"16,17":["Ruin, and then a light. She makes no promise as to the distance.","After the tower, the star: the sky rather politely refusing to fall.","The rubble and the lamp. One does follow the other, eventually."],
+"6,15":["A pair, and a chain between them. She hath heard this one confessed at teatime.","The Lovers beside the Devil: she lowers her voice.","The garden, and the one who gave it a bad name."],
+"12,18":["Upside down, in moonlight. Thou shalt see the road better than most.","The Hanged Man under the Moon: patient, and a little mad.","Waiting, in the dark, for a thing that does not come by road."],
+"18,19":["Day and night in one hand. She coughs. It is a great deal to hold.","The Moon and the Sun: a long day, and she was not consulted.","They never sit at the same table, and here they are."],
+"2,5":["Two keepers of one secret. They do not speak, and she shall not ask.","The Priestess and the Hierophant: one hides it, the other reads it aloud.","A veil and a pulpit. The same secret, on different sides."],
+"0,10":["The wheel turns beneath a man who looks the other way.","The Fool on the Wheel. He hath not noticed it turning.","A step, a turn, and nobody checked the ground."],
+"3,4":["A throne and a garden: a household, or a siege.","Empress and Emperor: the whole of a domestic argument, in two cards.","The house hath a mother and a father, and a very high fence."],
+"1,15":["A man with every tool, and a chain beside him.","The Magician beside the Devil: skill, and where it is used.","He can do anything, dear. Mark what he does."],
+"20,21":["The horn, and then the hush. This is the last page of the book.","Judgement and the World: the end of a thing, and its wreath.","A trumpet and a dance. Whichever comes first, she does not say."],
+"17,18":["A light, and its liar.","The Star and the Moon: one gives, one reflects. She prefers the gift.","Two lights in the dark, and only one is really there."],
+"13,20":["He calls, the other answers. She would rather not watch.","Death and Judgement: the call, and the reply. They are not rude.","A summoning, and a rising. She thinks it is more hopeful than it sounds."],
+"16,19":["Rubble, and then a bright morning. The morning, alas, does not mind the rubble.","The Tower and the Sun: the day after the ruin. Dazzling, and merciless.","After the lightning, a sunflower. Madame is not convinced."],
+"9,17":["A lantern and a star: two lights, and a great deal of dark between.","The Hermit and the Star: he carries his own light, she pours hers out.","Two sources of light, neither of them near."],
+"11,12":["A verdict, and the one hung up to dry.","Justice and the Hanged Man: the sentence and the wait.","The scales, and the one outside them."],
+"10,21":["The Wheel and the World: one turns, one rests; she says thou art both.","A circle in a circle. Madame needs to sit."],
+"14,15":["Temperance and the Devil: the mean, and the excess. They look rather alike by lamplight.","The cup poured evenly, and the chain pulled tight. It is a matter of hands."],
+"7,16":["The Chariot and the Tower: the speeding, and the stopping.","He rides on, and the lightning hath his address."],
+"8,15":["Strength and the Devil: the beast, and its owner. Madame doth not take sides.","A lion held gently, and a goat held tight. Two kinds of mastery."],
+"9,12":["The Hermit and the Hanged Man: two lonely men, in two quite different poses.","One walks alone, the other hangs alone. She prefers the walker."],
+"2,18":["The Priestess and the Moon: the same river, seen by the same lamp.","Two mysteries, one tide. Madame leaves the room, mentally."],
+"1,2":["The Magician and the Priestess: what is done, and what is known. Neither speaks of the other.","He acts, she watches. It is the oldest arrangement."],
+"3,19":["The Empress and the Sun: fruit, and the light on it. A good harvest, for once.","Wheat and sunflowers. Madame is almost cheerful."],
+"4,11":["The Emperor and Justice: the throne, and the verdict. They agree, which is alarming.","Two seats, two stern faces. The room feels formal."],
+"0,21":["The Fool and the World: the first card and the last. She says it is a whole life, folded.","A beginning and an ending, side by side; the rest was only walking."],
+"0,16":["The Fool and the Tower: one steps off, one is cast off. They fall rather similarly.","A step in the dark, a bolt from above. Thou art either blessed or unlucky."],
+"5,15":["The Hierophant and the Devil: a rule, and its shadow. They keep the same hours.","A church, and a cellar beneath it."],
+"6,18":["The Lovers and the Moon: a pair, and a fog. Madame drops her voice.","Two on the path, and the moon watching. It is not romantic; it is observed."],
+"8,9":["Strength and the Hermit: the quiet kinds, side by side. They do not need to speak.","A lion tamed, a lantern held. Patience, in two forms."],
+"14,17":["Temperance and the Star: a pouring and a pouring. She says it is a restful reading.","Two figures, two vessels, one cool water."],
+"12,13":["The Hanged Man and Death: the pause, and the end. She said it would be so.","He hangs, and Death rides past. Neither is hurried."],
+"19,20":["The Sun and Judgement: the light, and the call. A bright morning, and a trumpet.","The child and the risen. Everything is, for the moment, rather loud."],
+"15,16":["The Devil and the Tower: the chain, and the stroke that cuts it. She doth not approve of the method.","The bondage ends, in a manner of speaking, with lightning."],
+"13,21":["Death and the World: the end, and the circle. They are the same thing, dear.","He rides, and she dances. They are not strangers."],
+"1,16":["The Magician and the Tower: a clever man, and his lightning rod.","All the tools, and still the roof comes off."],
+"2,12":["The Priestess and the Hanged Man: the secret, and the one who hangs for it.","Stillness, and stillness. The room hath gone very quiet."],
+"4,16":["The Emperor and the Tower: the throne, and what comes for thrones.","Authority, and a bolt from the blue. Madame hath a pension; it is not much."],
+"10,13":["The Wheel and Death: the turn, and the end of the turn.","The wheel stops. It always does, in the end."],
+"7,10":["The Chariot and the Wheel: motion within motion. Madame feels faintly seasick.","He drives on a road that is also turning."],
+"3,13":["The Empress and Death: the fruit, and the autumn. They are not enemies.","Everything grows, and then it is the season. She makes a note."],
+"17,19":["The Star and the Sun: night and day, both kind. A rare reading.","Hope in the dark, and then in the light. Madame is suspicious, but pleased."],
+"6,14":["The Lovers and Temperance: a pairing, tempered. She approves.","The angel pours, and the two watch. A good sign, in a dim sort of way."],
+"1,19":["The Magician and the Sun: skill in full light. There is nowhere to hide the trick.","A fine day for conjuring, and everybody can see the strings."],
+"9,18":["The Hermit and the Moon: a lantern in a fog. He is not lost, he says.","Two ways of not being seen; one by choice."],
+"11,16":["Justice and the Tower: the sentence, and the stroke. She says they were always related.","The scales are level, and the roof is not."]};
+const sIdx=k=>Math.floor((k-22)/14),rIdx=k=>(k-22)%14;
+const RULES=[
+{id:'maj',min:3,p:.55,test:(c,k,n)=>k.filter(x=>x<22).length>=Math.ceil(n*.7),lines:[
+"So many of the greater cards. The matter is larger than thee, dear.",
+"Nearly all trumps. Madame feels a draught from something much taller than the room.",
+"The great cards crowd the cloth. Whatever it is, it did not start with thee.",
+"So many of the old names. She straightens, out of respect.",
+"A hand of trumps, dear: the deck is not merely commenting."]},
+{id:'nomaj',min:3,p:.5,test:(c,k)=>k.every(x=>x>=22),lines:[
+"Not one greater card. The matter is small, and therefore thine own.",
+"No great cards at all. This is a matter of days, not destinies.",
+"Only the lesser cards; the stuff of ordinary weather. Which is still weather.",
+"Nobody grand in the spread. It is a question for the kitchen table.",
+"No trumps. The great forces are elsewhere tonight."]},
+{id:'revmany',min:3,p:.55,test:(c,k,n)=>c.filter(x=>x.rev).length>=Math.ceil(n*.7),lines:[
+"Nearly all of them upside down. Either the room is the wrong way up, or thou art.",
+"So many reversals. The deck is turning its face to the wall.",
+"Upside down, most of them; as if the table hath been tipped.",
+"They have fallen the wrong way, nearly all. Madame does not blame the shuffle; she blames the hour.",
+"A great many reversals. The cards are speaking, as it were, through a hand."]},
+{id:'revnone',min:4,p:.4,test:(c,k,n,rv)=>rv&&c.every(x=>!x.rev),lines:[
+"Not one of them reversed. A tidy hand; Madame is a little suspicious.",
+"All upright. They are standing for thee.",
+"None upside down. The deck is on its best behaviour.",
+"Every card the right way. It will not last."]},
+{id:'aces',min:3,p:.5,test:(c,k)=>k.filter(x=>x>=22&&rIdx(x)===0).length>=2,lines:[
+"Aces, and aces. Beginnings by the handful, and none of them kept.",
+"Two aces. Madame lights another candle.",
+"More than one beginning in the room; she doubts thou canst follow them all.",
+"A pair of aces: the deck is making promises."]},
+{id:'court',min:3,p:.5,test:(c,k)=>k.filter(x=>x>=22&&rIdx(x)>=10).length>=2,lines:[
+"Many faces at the table. Thou art not alone with this.",
+"Court cards, several. They are people, dear, and they have opinions.",
+"A crowd of courtiers, and every one of them hath an interest.",
+"The court is in session; thou art the case."]},
+{id:'wands',min:3,p:.55,test:(c,k)=>k.filter(x=>x>=22&&sIdx(x)===0).length>=3,lines:[
+"So much fire in the spread. Mind the curtains.",
+"Wands, wands, wands: the deck is excited about something.",
+"A great many wands. It is a matter of will, or of impatience."]},
+{id:'cups',min:3,p:.55,test:(c,k)=>k.filter(x=>x>=22&&sIdx(x)===1).length>=3,lines:[
+"A great deal of water. Madame moves her teacup.",
+"Cups, in plenty. The heart is overfull, dear, or overdrawn.",
+"It is mostly cups. The matter is one of feeling, whatever thou tellest thyself."]},
+{id:'swords',min:3,p:.55,test:(c,k)=>k.filter(x=>x>=22&&sIdx(x)===2).length>=3,lines:[
+"Swords by the handful. The matter is one of words, and dangerous ones.",
+"So much steel. Madame covers her ears.",
+"A hand of swords: thought, and the sharp edge of it."]},
+{id:'pents',min:3,p:.55,test:(c,k)=>k.filter(x=>x>=22&&sIdx(x)===3).length>=3,lines:[
+"Coin after coin. It is a matter of the ground, and the rent.",
+"Pentacles in plenty. Practical, dear; the stars are only on the coin.",
+"A great deal of earth. Whatever happens next, it will happen slowly, and cost money."]},
+{id:'rank',min:3,p:.45,test:(c,k)=>{const r=k.filter(x=>x>=22).map(rIdx),s=new Set(r);return r.length>s.size},lines:[
+"Two of a number: the deck is repeating itself, which is how it emphasises.",
+"The same number twice. Madame hears it as an echo.",
+"A matching pair of numbers. Something is being said twice, in two different dialects.",
+"A repeated number. She underlines it, in the air."]},
+{id:'low',min:3,p:.4,test:(c,k)=>k.every(x=>x>=22&&rIdx(x)<=3),lines:[
+"All low numbers. The matter is early, or small, or both.",
+"Beginnings, and small ones. It hath not yet found its shape."]},
+{id:'high',min:3,p:.4,test:(c,k)=>k.every(x=>x>=22&&rIdx(x)>=6&&rIdx(x)<=9),lines:[
+"Nearly all high numbers. The matter is far on, and heavy with it.",
+"Late numbers. The thing is ripe, or over."]}];
+const NOPAT=[
+"No pattern between them, dear; which is, in its way, a pattern.",
+"They sit together without speaking. Cards are polite that way.",
+"Nothing links them but the cloth. She finds this restful.",
+"They do not agree with one another. They do not have to.",
+"Strangers on a cloth. Madame has seen worse companies.",
+"No thread between them that she can find; the thread may be thine."];
+function readingLines(cards,rv){
+  const ks=cards.map(c=>c.k),n=ks.length,out=[];
+  for(let a=0;a<n;a++)for(let b=a+1;b<n;b++){const key=[ks[a],ks[b]].sort((x,y)=>x-y).join(',');if(COMBOS[key]&&chance(.6))out.push(fresh('cb'+key,COMBOS[key]))}
+  for(const r of RULES)if(n>=r.min&&r.test(cards,ks,n,rv)&&chance(r.p))out.push(fresh('rl'+r.id,r.lines));
+  for(let i=out.length-1;i>0;i--){const j=rnd(i+1);[out[i],out[j]]=[out[j],out[i]]}
+  let res=out.slice(0,2);
+  if(!res.length&&n>=3&&chance(.25))res=[fresh('nopat',NOPAT)];
+  return res;
+}
+
 const $=s=>document.querySelector(s);
 const calm=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const rnd=n=>crypto.getRandomValues(new Uint32Array(1))[0]%n;
+const chance=p=>rnd(1000)<p*1000;
+const pick=a=>a[rnd(a.length)];
+
+/* ---------- storage: localStorage, with a cookie copy for small values (works on a plain hosted site) ---------- */
+const store={
+  get(k){
+    try{const v=localStorage.getItem(k);if(v!==null)return v}catch(e){}
+    try{const m=document.cookie.match(new RegExp('(?:^|; )'+k+'=([^;]*)'));return m?decodeURIComponent(m[1]):null}catch(e){return null}
+  },
+  set(k,v){
+    try{localStorage.setItem(k,v)}catch(e){}
+    try{document.cookie=k+'='+encodeURIComponent(v)+'; max-age=31536000; path=/; SameSite=Lax'}catch(e){}
+  }
+};
+
+/* ---------- lines that do not repeat: each pool is dealt like a shuffled deck, then reshuffled ---------- */
+let BAGS={};
+try{BAGS=JSON.parse(localStorage.getItem('sos_bags')||'{}')||{}}catch(e){BAGS={}}
+function fresh(name,arr){
+  if(!arr.length)return '';
+  let b=BAGS[name];
+  if(!b||b.n!==arr.length||!Array.isArray(b.r)||!b.r.length){
+    const r=[...arr.keys()];
+    for(let i=r.length-1;i>0;i--){const j=rnd(i+1);[r[i],r[j]]=[r[j],r[i]]}
+    if(b&&r.length>1&&r[r.length-1]===b.last){[r[0],r[r.length-1]]=[r[r.length-1],r[0]]}
+    b={n:arr.length,r,last:b?b.last:-1};BAGS[name]=b;
+  }
+  const i=b.r.pop();b.last=i;
+  try{localStorage.setItem('sos_bags',JSON.stringify(BAGS))}catch(e){}
+  return arr[i];
+}
 
 /* ---------- fog ---------- */
 const fog=$('#fog'),FW=96,FH=54,fx=fog.getContext('2d');fog.width=FW;fog.height=FH;
@@ -422,9 +1184,11 @@ function fogFrame(t){
 }
 fogFrame(0);if(!calm)setInterval(()=>fogFrame(performance.now()),240);
 
-/* ---------- day counter ---------- */
-let day=1;
-try{day=(+localStorage.getItem('sos_day')||0)+1;localStorage.setItem('sos_day',day)}catch(e){}
+/* ---------- day counter: advances once per calendar day ---------- */
+const now=new Date(),todayKey=now.getFullYear()+'-'+(now.getMonth()+1)+'-'+now.getDate();
+let day=Math.max(0,parseInt(store.get('sos_day'),10)||0);
+if(store.get('sos_last')!==todayKey||day<1){day++;store.set('sos_day',String(day));store.set('sos_last',todayKey)}
+let visits=(parseInt(store.get('sos_visits'),10)||0)+1;store.set('sos_visits',String(visits));
 $('#day').textContent='Day '+String(day).padStart(3,'0');
 
 /* ---------- sound ---------- */
@@ -453,16 +1217,69 @@ function audio(){
   if(ac.state==='suspended')ac.resume();
   master.gain.setTargetAtTime(on?.35:0,ac.currentTime,.4);
 }
-$('#snd').onclick=e=>{on=!on;e.currentTarget.setAttribute('aria-pressed',on);e.currentTarget.textContent='Sound: '+(on?'on':'off');audio()};
+const sndBtn=$('#snd');
+function paintSnd(){sndBtn.setAttribute('aria-pressed',on);sndBtn.textContent='Sound: '+(on?'on':'off')}
+sndBtn.onclick=()=>{on=!on;store.set('sos_sound',on?'1':'0');paintSnd();audio()};
+if(store.get('sos_sound')==='1'){
+  on=true;paintSnd();
+  /* browsers only allow audio after a touch or click, so start it on the first one */
+  const arm=()=>{removeEventListener('pointerdown',arm);removeEventListener('keydown',arm);if(on)audio()};
+  addEventListener('pointerdown',arm);addEventListener('keydown',arm);
+}
 
 /* ---------- the spread ---------- */
 let n=3,rev=true,drawn=[],left=0;
-document.querySelectorAll('.opt[data-n]').forEach(b=>b.onclick=()=>{n=+b.dataset.n;document.querySelectorAll('.opt[data-n]').forEach(o=>o.setAttribute('aria-pressed',o===b))});
-$('#rv').onclick=e=>{rev=!rev;e.currentTarget.setAttribute('aria-pressed',rev);e.currentTarget.textContent='Reversals: '+(rev?'yes':'no')};
+const spreadBtns=[...document.querySelectorAll('.opt[data-n]')];
+function paintSpread(){spreadBtns.forEach(o=>o.setAttribute('aria-pressed',+o.dataset.n===n))}
+function paintRev(){const r=$('#rv');r.setAttribute('aria-pressed',rev);r.textContent='Reversals: '+(rev?'yes':'no')}
+{const sn=parseInt(store.get('sos_n'),10);if([1,3,5,10].includes(sn))n=sn;if(store.get('sos_rev')==='0')rev=false}
+paintSpread();paintRev();
+spreadBtns.forEach(b=>b.onclick=()=>{n=+b.dataset.n;store.set('sos_n',String(n));paintSpread()});
+$('#rv').onclick=()=>{rev=!rev;store.set('sos_rev',rev?'1':'0');paintRev()};
 const stage=$('#stage'),frags=$('#frags'),coda=$('#coda'),again=$('#again'),hint=$('#hint');
 
 const CELT=[[2,2],[2,2],[2,3],[1,2],[2,1],[3,2],[4,4],[4,3],[4,2],[4,1]];
-const pick=a=>a[rnd(a.length)];
+const HOUR=new Date().getHours();
+function openingLine(){
+  const r=rnd(100);
+  if(visits>1&&r<18)return fresh('openr',OPENR);
+  if((HOUR>=22||HOUR<5)&&r<30)return fresh('openn',OPENN);
+  if(HOUR>=5&&HOUR<11&&r<22)return fresh('openm',OPENM);
+  if(HOUR>=17&&HOUR<22&&r<22)return fresh('opene',OPENE);
+  return fresh('open',OPEN);
+}
+function questionLine(q){
+  if(!q)return fresh('noq',NOQ);
+  if(chance(.55)){
+    for(let i=0;i<KEYQ.length;i++)if(KEYQ[i][0].test(q))return fresh('keyq'+i,KEYQ[i][1]);
+  }
+  return fresh('qrep',QREP);
+}
+let RECENT=[];
+try{RECENT=JSON.parse(localStorage.getItem('sos_recent')||'[]')||[]}catch(e){RECENT=[]}
+function noteFor(h,i){
+  let t='';
+  for(let a=0;a<6;a++){t=noteRaw(h,i);if(!t||!RECENT.includes(t))break}
+  if(t){RECENT.push(t);if(RECENT.length>80)RECENT.shift();try{localStorage.setItem('sos_recent',JSON.stringify(RECENT))}catch(e){}}
+  return t;
+}
+function noteRaw(h,i){
+  const x=rnd(100),pool=POSN[n]&&POSN[n][i]?POSN[n][i]:null;
+  if(h.rev&&x<24)return fresh('rev',REVNOTE);
+  if(h.k<22){
+    if(x<56)return fresh('c'+h.k,[MNOTE[h.k],MNOTE2[h.k],MNOTE3[h.k],MNOTE4[h.k]]);
+    if(x<70&&pool)return fresh('p'+n+'_'+i,pool);
+    if(x<82)return fresh('aside',ASIDE);
+    return '';
+  }
+  const si=sIdx(h.k),ri=rIdx(h.k);
+  if(x<26)return MINOR1[h.k-22];
+  if(x<46)return fresh('s'+si,SNOTE[si].concat(SUITN[si]));
+  if(x<64)return fresh('r'+ri,RANKN[ri]);
+  if(x<76&&pool)return fresh('p'+n+'_'+i,pool);
+  if(x<86)return fresh('aside',ASIDE);
+  return '';
+}
 function deal(){
   const deck=[...Array(78).keys()];
   for(let i=77;i>0;i--){const j=rnd(i+1);[deck[i],deck[j]]=[deck[j],deck[i]]}
@@ -471,7 +1288,7 @@ function deal(){
   $('#table').hidden=false;stage.className=cel?'celtic':'';stage.style.setProperty('--mw',cel?'780px':(n*210+(n-1)*14)+'px');
   stage.replaceChildren();frags.replaceChildren();coda.hidden=again.hidden=true;hint.hidden=false;
   const q=$('#q').value.trim();$('#echo').textContent=q?'Thou askedst: \u201C'+q+'\u201D':'';
-  $('#open').textContent=pick(OPEN)+' '+(q?pick(QREP):pick(NOQ));
+  $('#open').textContent=openingLine()+' '+questionLine(q);
   drawn.forEach((h,i)=>{
     const [num,name]=POS[n][i],cell=document.createElement('div'),b=document.createElement('button'),face=document.createElement('div'),cv=document.createElement('canvas'),nm=document.createElement('span'),tt=document.createElement('span'),lab=document.createElement('span');
     cell.className='cell';b.className='slot';b.setAttribute('aria-label','Card '+num+', turn it over');
@@ -482,7 +1299,7 @@ function deal(){
     f.className='frag';f.hidden=true;f.innerHTML='<span class="px pos"></span><h3></h3>';
     f.firstChild.textContent=num+' \u00B7 '+name;f.querySelector('h3').textContent=D[h.k][0];
     if(h.rev){const s=document.createElement('small');s.textContent='reversed';f.querySelector('h3').append(s)}
-    p.textContent=D[h.k][h.rev?3:2];nt.className='note';nt.textContent='\u2014 '+(h.rev&&rnd(2)?pick(REVNOTE):(h.k<22?pick([MNOTE[h.k],MNOTE2[h.k]]):pick(SNOTE[((h.k-22)/14)|0])));
+    p.textContent=D[h.k][h.rev?3:2];nt.className='note';{const t=noteFor(h,i);nt.textContent=t?'\u2014 '+t:'';nt.hidden=!t}
     f.append(p,nt);frags.append(f);
   });
   $('#table').scrollIntoView({behavior:calm?'auto':'smooth',block:'start'});
@@ -501,8 +1318,11 @@ function reveal(b,i){
 function show(i){
   frags.children[i].hidden=false;
   if(--left===0){
-    coda.innerHTML='<span class="px">Madame Sosostris adds</span>';
-    comboLines(drawn).forEach(t=>{const q=document.createElement('p');q.className='combo';q.textContent=t;coda.append(q)});const p=document.createElement('p');p.textContent=pick(C);coda.append(p);if(n===10){const p2=document.createElement('p');p2.textContent=pick(C);coda.append(p2)}
+    coda.innerHTML='<span class="px"></span>';coda.firstChild.textContent=fresh('hd',CODAHEAD);
+    readingLines(drawn,rev).forEach(t=>{const q=document.createElement('p');q.className='combo';q.textContent=t;coda.append(q)});
+    const lines=[n===1&&chance(.4)?fresh('one',ONEC):fresh('coda',C)];
+    if(n===10)lines.push(fresh('coda',C));
+    lines.forEach(t=>{const p=document.createElement('p');p.textContent=t;coda.append(p)});
     coda.hidden=again.hidden=false;hint.hidden=true;
   }
 }
